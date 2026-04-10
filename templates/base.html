@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}The Laddoo House{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bd:#1C0A00;--br:#3B1507;--bm:#5C2A0E;--gold:#C9932A;--gl:#E8B96A;--ton:rgba(255,255,255,.88);--tmut:rgba(255,255,255,.5);--bg:rgba(201,147,42,.3);--bgs:rgba(201,147,42,.6);}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'Jost',sans-serif;background:var(--bd);color:var(--ton);}
+.orn{color:var(--gold);font-size:16px;letter-spacing:6px;display:block;text-align:center;margin-bottom:10px;}
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+{% block extra_js %}{% endblock %}
+</body>
+</html>

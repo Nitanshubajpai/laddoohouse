@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — The Laddoo House{% endblock %}
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+body{background:#FFFBF4;color:#1E0D00;}
+nav{position:sticky;top:0;z-index:100;background:#FFFBF4;border-bottom:2px solid #E8B96A;padding:0 6%;display:flex;align-items:center;justify-content:space-between;height:110px;box-shadow:0 2px 24px rgba(201,147,42,.12);}
+.nav-logo{display:flex;align-items:center;gap:16px;text-decoration:none;}
+.nav-logo-img{height:90px;width:auto;display:block;}
+.nav-brand-text{font-family:'Unbounded',sans-serif;font-size:20px;color:#1E0D00;font-weight:800;line-height:1.2;letter-spacing:-.3px;}
+.back-link{font-size:13px;color:#6B4A30;letter-spacing:1px;text-transform:uppercase;text-decoration:none;font-weight:600;transition:color .2s;border:1.5px solid #EAD9C2;padding:10px 20px;border-radius:8px;}
+.back-link:hover{color:#C9932A;border-color:#C9932A;}
+
+.pd-wrap{max-width:1100px;margin:0 auto;padding:60px 6%;}
+.pd-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;}
+.pd-img-box{position:sticky;top:90px;}
+.pd-img{width:100%;aspect-ratio:1;background:#FFF5E6;border-radius:20px;border:1px solid #EAD9C2;display:flex;align-items:center;justify-content:center;font-size:100px;overflow:hidden;box-shadow:0 8px 32px rgba(201,147,42,.1);}
+.pd-img img{width:100%;height:100%;object-fit:cover;}
+.pd-tag{display:inline-block;font-size:9px;padding:5px 14px;letter-spacing:2px;text-transform:uppercase;border-radius:20px;background:#C9932A;color:#fff;margin-top:16px;font-weight:700;}
+
+.pd-breadcrumb{font-size:10px;color:#B0906A;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:20px;}
+.pd-breadcrumb a{color:#B0906A;text-decoration:none;}
+.pd-breadcrumb a:hover{color:#C9932A;}
+.pd-name{font-family:'Unbounded',sans-serif;font-size:clamp(24px,3.5vw,40px);color:#1E0D00;font-weight:800;line-height:1.2;margin-bottom:12px;}
+.pd-desc{font-family:'Inter',sans-serif;font-size:14px;color:#6B4A30;line-height:1.9;margin-bottom:28px;}
+
+.pd-meta{display:flex;gap:0;margin-bottom:28px;border:1px solid #EAD9C2;border-radius:12px;overflow:hidden;}
+.pd-meta-item{flex:1;padding:16px;text-align:center;border-right:1px solid #EAD9C2;}
+.pd-meta-item:last-child{border-right:none;}
+.pd-meta-label{font-size:9px;color:#B0906A;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;font-weight:600;}
+.pd-meta-val{font-family:'Unbounded',sans-serif;font-size:14px;color:#1E0D00;font-weight:700;}
+
+.pd-price{font-family:'Unbounded',sans-serif;font-size:38px;color:#C9932A;font-weight:800;margin-bottom:4px;}
+.pd-discount-note{font-size:12px;color:#2E7D32;font-weight:600;margin-bottom:20px;}
+.add-to-cart-btn{width:100%;background:#C9932A;color:#fff;border:none;padding:18px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:2px;text-transform:uppercase;border-radius:12px;transition:all .2s;margin-top:4px;}
+.add-to-cart-btn:hover{background:#A07520;}
+.add-to-cart-btn.added{background:#1E0D00;}
+
+.section-title{font-family:'Unbounded',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:#C9932A;margin-bottom:14px;margin-top:36px;padding-bottom:10px;border-bottom:2px solid #EAD9C2;font-weight:700;}
+.ingredient-list{list-style:none;display:flex;flex-wrap:wrap;gap:8px;}
+.ingredient-list li{font-size:12px;padding:6px 14px;border:1.5px solid #EAD9C2;border-radius:20px;color:#5A3E28;background:#FFF5E6;font-weight:500;}
+.info-text{font-size:13px;color:#6B4A30;line-height:1.8;}
+.allergen-box{background:#FFF8E7;border:1.5px solid #E8B96A;border-radius:10px;padding:14px 18px;font-size:12px;color:#7A5020;margin-top:8px;font-weight:500;}
+
+.related-section{max-width:1100px;margin:0 auto;padding:0 6% 80px;}
+.related-title{font-family:'Unbounded',sans-serif;font-size:22px;color:#1E0D00;font-weight:800;margin-bottom:24px;padding-top:48px;border-top:2px solid #EAD9C2;}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px;}
+.related-card{background:#fff;border-radius:14px;overflow:hidden;border:1px solid #EAD9C2;text-decoration:none;display:block;transition:all .25s;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.related-card:hover{box-shadow:0 8px 28px rgba(201,147,42,.18);transform:translateY(-4px);}
+.rc-img{height:120px;display:flex;align-items:center;justify-content:center;font-size:40px;background:#FFF5E6;overflow:hidden;}
+.rc-img img{width:100%;height:100%;object-fit:cover;}
+.rc-body{padding:14px 16px;}
+.rc-name{font-family:'Unbounded',sans-serif;font-size:11px;color:#1E0D00;font-weight:700;line-height:1.4;}
+.rc-price{font-size:12px;color:#8B6A50;margin-top:4px;}
+
+@media(max-width:768px){
+  nav{padding:0 5%;height:90px;}
+  .nav-logo-img{height:70px;}
+  .nav-brand-text{font-size:16px;}
+  .back-link{font-size:11px;padding:8px 14px;}
+  .pd-wrap{padding:36px 5%;}
+  .pd-grid{grid-template-columns:1fr;gap:28px;}
+  .pd-img-box{position:static;}
+  .pd-img{aspect-ratio:4/3;}
+  .pd-name{font-size:clamp(22px,6vw,36px);}
+  .pd-desc{font-size:14px;}
+  .pd-meta{flex-wrap:wrap;}
+  .pd-meta-item{min-width:30%;}
+  .pd-price{font-size:30px;}
+  .related-section{padding:0 5% 60px;}
+  .related-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+}
+@media(max-width:480px){
+  .pd-meta-item{min-width:45%;}
+  .related-grid{grid-template-columns:1fr 1fr;}
+  .ingredient-list li{font-size:11px;padding:5px 10px;}
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{% load static %}
+<nav>
+  <a href="{% url 'store:home' %}" class="nav-logo">
+    <img src="{% static 'css/laddoo.png' %}" alt="The Laddoo House" class="nav-logo-img">
+    <div class="nav-brand-text">The Laddoo House</div>
+  </a>
+  <a href="{% url 'store:home' %}#menu" class="back-link">← All Laddoos</a>
+</nav>
+
+<div class="pd-wrap">
+  <div class="pd-grid">
+
+    <div class="pd-img-box">
+      <div class="pd-img">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+          <span>{{ product.emoji }}</span>
+        {% endif %}
+      </div>
+      {% if product.tag %}<span class="pd-tag">{{ product.get_tag_display }}</span>{% endif %}
+    </div>
+
+    <div>
+      <div class="pd-breadcrumb"><a href="{% url 'store:home' %}">Home</a> › <a href="{% url 'store:home' %}#menu">Laddoos</a> › {{ product.name }}</div>
+      <h1 class="pd-name">{{ product.name }}</h1>
+      <p class="pd-desc">{{ product.description }}</p>
+
+      <div class="pd-meta">
+        <div class="pd-meta-item">
+          <div class="pd-meta-label">Weight</div>
+          <div class="pd-meta-val">{{ product.weight }}</div>
+        </div>
+        {% if product.shelf_life %}
+        <div class="pd-meta-item">
+          <div class="pd-meta-label">Shelf Life</div>
+          <div class="pd-meta-val">{{ product.shelf_life }}</div>
+        </div>
+        {% endif %}
+        <div class="pd-meta-item">
+          <div class="pd-meta-label">Prepared</div>
+          <div class="pd-meta-val">Fresh</div>
+        </div>
+      </div>
+
+      <div class="pd-price">₹{{ product.price }}</div>
+      <div class="pd-discount-note">✓ Save ₹{{ upi_discount }} with UPI payment</div>
+
+      <button class="add-to-cart-btn" id="detailAddBtn"
+        onclick="addToCart({{ product.id }},'{{ product.name|escapejs }}',{{ product.price }},'{{ product.emoji }}','{{ product.weight }}');this.textContent='✓ Added to Cart';this.classList.add('added')">
+        + Add to Cart
+      </button>
+
+      {% if product.ingredients %}
+      <div class="section-title">Ingredients</div>
+      <ul class="ingredient-list">
+        {% for ing in product.ingredients.splitlines %}
+          {% if ing.strip %}<li>{{ ing.strip }}</li>{% endif %}
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      {% if product.storage_instructions %}
+      <div class="section-title">Storage</div>
+      <p class="info-text">{{ product.storage_instructions }}</p>
+      {% endif %}
+
+      {% if product.allergens %}
+      <div class="section-title">Allergen Information</div>
+      <div class="allergen-box">⚠ {{ product.allergens }}</div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+{% if other_products %}
+<div class="related-section">
+  <div class="related-title">You May Also Like</div>
+  <div class="related-grid">
+    {% for p in other_products %}
+    <a href="{% url 'store:product_detail' p.pk %}" class="related-card">
+      <div class="rc-img">
+        {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}">{% else %}<span>{{ p.emoji }}</span>{% endif %}
+      </div>
+      <div class="rc-body">
+        <div class="rc-name">{{ p.name }}</div>
+        <div class="rc-price">₹{{ p.price }} · {{ p.weight }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+{% block extra_js %}
+<script>
+function addToCart(id, name, price, emoji, weight) {
+  var pending = {id:id, name:name, price:price, emoji:emoji, weight:weight};
+  sessionStorage.setItem('pendingCart', JSON.stringify(pending));
+}
+</script>
+{% endblock %}

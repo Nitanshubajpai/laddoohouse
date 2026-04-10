@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Admin{% endblock %} — The Laddoo House</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bd:#1C0A00;--br:#3B1507;--gold:#C9932A;--gl:#E8B96A;--ton:rgba(255,255,255,.88);--tmut:rgba(255,255,255,.5);--bg:rgba(201,147,42,.3);--bgs:rgba(201,147,42,.6);--sw:220px;}
+*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Jost',sans-serif;background:#100500;color:var(--ton);display:flex;min-height:100vh;}
+.sidebar{width:var(--sw);background:var(--bd);border-right:1px solid var(--bg);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;}
+.sb-logo{padding:20px 18px;border-bottom:1px solid var(--bg);display:flex;align-items:center;gap:10px;}
+.sb-ic{width:36px;height:36px;border-radius:50%;background:rgba(201,147,42,.15);border:1px solid var(--bgs);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);}
+.sb-brand{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--gl);line-height:1.2;}
+.sb-brand span{display:block;font-size:9px;font-family:'Jost',sans-serif;color:var(--tmut);letter-spacing:2px;text-transform:uppercase;}
+.sb-nav{flex:1;padding:12px 0;}
+.ni{display:flex;align-items:center;gap:10px;padding:11px 18px;font-size:13px;color:var(--tmut);cursor:pointer;transition:all .15s;border-left:2px solid transparent;letter-spacing:.5px;text-decoration:none;}
+.ni:hover{color:var(--ton);background:rgba(255,255,255,.04);}
+.ni.active{color:var(--gl);border-left-color:var(--gold);background:rgba(201,147,42,.08);}
+.ni .ic{font-size:15px;width:20px;text-align:center;}
+.sb-foot{padding:14px 18px;border-top:1px solid var(--bg);font-size:11px;color:rgba(255,255,255,.25);letter-spacing:1px;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
+.topbar{background:var(--bd);border-bottom:1px solid var(--bg);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.topbar h1{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gl);}
+.tb-r{display:flex;align-items:center;gap:14px;}
+.tb-date{font-size:12px;color:var(--tmut);}
+.tb-av{width:32px;height:32px;background:rgba(201,147,42,.2);border:1px solid var(--bgs);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--gold);font-family:'Cormorant Garamond',serif;}
+.content{padding:24px 28px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat{background:var(--br);border:1px solid var(--bg);padding:18px;}
+.stat-lbl{font-size:10px;color:var(--tmut);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:30px;color:white;font-weight:600;}
+.stat-sub{font-size:11px;color:var(--tmut);margin-top:4px;}
+.card{background:var(--br);border:1px solid var(--bg);overflow:hidden;margin-bottom:24px;}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--bg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.card-head h2{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gl);}
+.btn{padding:8px 18px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Jost',sans-serif;border:none;transition:all .15s;font-weight:500;text-decoration:none;display:inline-block;}
+.btn-gold{background:var(--gold);color:var(--bd);}
+.btn-gold:hover{background:var(--gl);}
+.btn-out{background:transparent;color:var(--gl);border:1px solid var(--bgs);}
+.btn-out:hover{border-color:var(--gold);}
+.btn-red{background:rgba(139,32,32,.3);color:#F48FB1;border:1px solid rgba(139,32,32,.5);}
+.btn-red:hover{background:rgba(139,32,32,.5);}
+.btn-sm{padding:5px 12px;font-size:10px;}
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:10px 16px;text-align:left;font-size:10px;color:var(--tmut);letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--bg);background:rgba(0,0,0,.2);}
+td{padding:14px 16px;border-bottom:1px solid rgba(201,147,42,.1);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}tr:hover td{background:rgba(255,255,255,.02);}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:500;}
+.b-new{background:rgba(26,82,118,.3);color:#90CAF9;border:1px solid rgba(26,82,118,.5);}
+.b-making{background:rgba(201,147,42,.2);color:var(--gl);border:1px solid var(--bg);}
+.b-packed{background:rgba(108,52,131,.3);color:#CE93D8;border:1px solid rgba(108,52,131,.5);}
+.b-shipped{background:rgba(45,106,79,.3);color:#A5D6A7;border:1px solid rgba(45,106,79,.5);}
+.b-delivered{background:rgba(27,94,32,.3);color:#C8E6C9;border:1px solid rgba(27,94,32,.5);}
+.b-avail{background:rgba(45,106,79,.25);color:#A5D6A7;border:1px solid rgba(45,106,79,.4);}
+.b-unavail{background:rgba(139,32,32,.25);color:#EF9A9A;border:1px solid rgba(139,32,32,.4);}
+.acts{display:flex;gap:6px;flex-wrap:wrap;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.fg input,.fg textarea,.fg select{width:100%;padding:10px 12px;border:1px solid var(--bg);background:rgba(255,255,255,.05);color:white;font-family:'Jost',sans-serif;font-size:14px;outline:none;transition:border-color .2s;}
+.fg input::placeholder,.fg textarea::placeholder{color:rgba(255,255,255,.22);}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--gold);}
+.fg select option{background:var(--br);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.msgs{margin-bottom:16px;}
+.msg{padding:10px 14px;font-size:13px;margin-bottom:6px;}
+.msg-success{background:rgba(45,106,79,.3);color:#A5D6A7;border:1px solid rgba(45,106,79,.5);}
+.msg-error{background:rgba(139,32,32,.3);color:#EF9A9A;border:1px solid rgba(139,32,32,.5);}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;}
+.toggle-lbl{font-size:13px;color:var(--ton);}
+.toggle{position:relative;width:44px;height:24px;}
+.toggle input{opacity:0;width:0;height:0;}
+.tslider{position:absolute;inset:0;background:rgba(255,255,255,.15);cursor:pointer;border:1px solid var(--bg);transition:.3s;}
+.tslider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:var(--tmut);transition:.3s;}
+.toggle input:checked+.tslider{background:rgba(45,106,79,.4);border-color:rgba(45,106,79,.6);}
+.toggle input:checked+.tslider:before{transform:translateX(20px);background:#81C784;}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr;}}
+</style>
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-ic">LH</div>
+    <div class="sb-brand">The Laddoo House <span>Admin Panel</span></div>
+  </div>
+  <nav class="sb-nav">
+    <a href="{% url 'dashboard:home' %}" class="ni {% block nav_home %}{% endblock %}"><span class="ic">📊</span> Overview</a>
+    <a href="{% url 'dashboard:orders' %}" class="ni {% block nav_orders %}{% endblock %}"><span class="ic">📦</span> Orders</a>
+    <a href="{% url 'dashboard:products' %}" class="ni {% block nav_products %}{% endblock %}"><span class="ic">🟤</span> Products</a>
+    <a href="{% url 'store:home' %}" class="ni" target="_blank"><span class="ic">🌐</span> View Store</a>
+    <a href="{% url 'dashboard:logout' %}" class="ni" style="margin-top:auto"><span class="ic">↩</span> Logout</a>
+  </nav>
+  <div class="sb-foot">The Laddoo House v2.0</div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+    <div class="tb-r">
+      <span class="tb-date" id="dt"></span>
+      <div class="tb-av">TL</div>
+    </div>
+  </div>
+  <div class="content">
+    {% if messages %}<div class="msgs">{% for m in messages %}<div class="msg msg-{{ m.tags }}">{{ m }}</div>{% endfor %}</div>{% endif %}
+    {% block main_content %}{% endblock %}
+  </div>
+</div>
+<script>document.getElementById('dt').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Order Confirmed — The Laddoo House{% endblock %}
+{% block extra_css %}
+<style>
+.success-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.success-box{background:var(--br);border:1px solid var(--bg);padding:48px;text-align:center;max-width:500px;width:100%;}
+.suc-orn{font-family:'Cormorant Garamond',serif;font-size:60px;color:var(--gold);line-height:1;margin-bottom:8px;}
+h2{font-family:'Cormorant Garamond',serif;font-size:34px;color:white;margin-bottom:10px;}
+p{font-size:14px;color:var(--tmut);line-height:1.8;margin-bottom:6px;}
+.order-badge{font-family:'Cormorant Garamond',serif;font-size:20px;background:rgba(201,147,42,.12);color:var(--gl);border:1px solid var(--bg);padding:10px 28px;display:inline-block;margin:14px 0 22px;letter-spacing:2px;}
+.wa-btn{background:#25D366;color:white;border:none;padding:13px 30px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Jost',sans-serif;text-decoration:none;display:inline-block;margin-bottom:10px;}
+.back-btn{display:inline-block;background:transparent;color:var(--tmut);border:1px solid var(--bg);padding:11px 26px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:all .2s;margin-top:8px;}
+.back-btn:hover{color:var(--gold);border-color:var(--gold);}
+</style>
+{% endblock %}
+{% block content %}
+<div class="success-wrap">
+  <div class="success-box">
+    <div class="suc-orn">❧</div>
+    <h2>Order Placed!</h2>
+    <p>Thank you, {{ order.name }}! Your fresh Hakeemji laddoos are being prepared with love.</p>
+    <div class="order-badge">{{ order.order_id }}</div>
+    <p>Our team will reach out on WhatsApp to confirm your order and provide updates.</p>
+    <br>
+    <a class="wa-btn" href="https://wa.me/{{ whatsapp }}?text={{ order.order_id }}%20placed%2C%20please%20confirm!" target="_blank">Track on WhatsApp</a>
+    <br>
+    <a class="back-btn" href="{% url 'store:home' %}">Continue Shopping</a>
+  </div>
+</div>
+<script>
+(function(){
+  var msg = encodeURIComponent(
+    "Hi! I just placed order *{{ order.order_id }}* on The Laddoo House.\n" +
+    "Name: {{ order.name }}\n" +
+    "Total: ₹{{ order.total }}\n" +
+    "Please confirm!"
+  );
+  window.open("https://wa.me/{{ whatsapp }}?text=" + msg, "_blank");
+})();
+</script>
+{% endblock %}

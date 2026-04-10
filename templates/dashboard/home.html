@@ -1,0 +1,32 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Overview{% endblock %}
+{% block page_title %}Overview{% endblock %}
+{% block nav_home %}active{% endblock %}
+{% block main_content %}
+<div class="stats">
+  <div class="stat"><div class="stat-lbl">Total Orders</div><div class="stat-val">{{ stats.total_orders }}</div></div>
+  <div class="stat"><div class="stat-lbl">Revenue</div><div class="stat-val">₹{{ stats.revenue }}</div></div>
+  <div class="stat"><div class="stat-lbl">Pending</div><div class="stat-val">{{ stats.pending }}</div><div class="stat-sub">Need attention</div></div>
+  <div class="stat"><div class="stat-lbl">Delivered</div><div class="stat-val">{{ stats.delivered }}</div></div>
+</div>
+{% if stats.new_orders %}<div style="background:rgba(201,147,42,.1);border:1px solid var(--bg);padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--gl)">⚡ You have <strong>{{ stats.new_orders }} new order{{ stats.new_orders|pluralize }}</strong> waiting. <a href="{% url 'dashboard:orders' %}?status=New" style="color:var(--gold)">View now →</a></div>{% endif %}
+<div class="card">
+  <div class="card-head"><h2>Recent Orders</h2><a href="{% url 'dashboard:orders' %}" class="btn btn-out btn-sm">View All</a></div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+    {% for o in recent_orders %}
+    <tr>
+      <td style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gl)">{{ o.order_id }}</td>
+      <td><div style="font-weight:500">{{ o.name }}</div><div style="font-size:11px;color:var(--tmut)">{{ o.phone }}</div></td>
+      <td style="font-family:'Cormorant Garamond',serif;font-size:17px">₹{{ o.total }}</td>
+      <td><span class="badge b-{{ o.status|lower }}">{{ o.status }}</span></td>
+      <td style="font-size:12px;color:var(--tmut)">{{ o.created_at|date:"d M" }}</td>
+      <td><a href="{% url 'dashboard:order_detail' o.pk %}" class="btn btn-out btn-sm">View</a></td>
+    </tr>
+    {% empty %}<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--tmut)">No orders yet</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+{% endblock %}

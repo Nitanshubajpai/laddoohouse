@@ -1,0 +1,116 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ action }} Product{% endblock %}{% block page_title %}{{ action }} Product{% endblock %}{% block nav_products %}active{% endblock %}
+{% block extra_css %}
+<style>
+.form-card{background:var(--br);border:1px solid var(--bg);padding:28px;max-width:640px;}
+.emoji-pick{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-top:8px;}
+.ep{width:100%;aspect-ratio:1;font-size:22px;background:rgba(255,255,255,.04);border:1px solid var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.ep:hover,.ep.sel{background:rgba(201,147,42,.15);border-color:var(--bgs);}
+.img-upload-area{border:2px dashed var(--bg);padding:16px;text-align:center;cursor:pointer;transition:border-color .15s;position:relative;}
+.img-upload-area:hover{border-color:var(--bgs);}
+.img-preview{width:100%;max-height:180px;object-fit:cover;display:block;margin-bottom:10px;}
+</style>
+{% endblock %}
+{% block main_content %}
+<div style="margin-bottom:16px"><a href="{% url 'dashboard:products' %}" class="btn btn-out btn-sm">← Back to Products</a></div>
+<div class="form-card">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="emoji" id="emojiVal" value="{{ product.emoji|default:'🟤' }}">
+    <div class="frow">
+      <div class="fg"><label>Product Name *</label><input type="text" name="name" value="{{ product.name|default:'' }}" placeholder="e.g. Besan Laddoo" required></div>
+      <div class="fg"><label>Price (₹) *</label><input type="number" name="price" value="{{ product.price|default:'' }}" placeholder="400" min="1" required></div>
+    </div>
+    <div class="fg"><label>Description *</label><textarea name="description" rows="2" placeholder="Short description of this laddoo" required>{{ product.description|default:'' }}</textarea></div>
+    <div class="frow">
+      <div class="fg"><label>Weight</label><input type="text" name="weight" value="{{ product.weight|default:'400g' }}" placeholder="400g"></div>
+      <div class="fg"><label>Sort Order</label><input type="number" name="sort_order" value="{{ product.sort_order|default:'0' }}" min="0"></div>
+    </div>
+    <div class="fg">
+      <label>Tag</label>
+      <select name="tag">
+        <option value="" {% if not product.tag %}selected{% endif %}>None</option>
+        <option value="ayurvedic" {% if product.tag == 'ayurvedic' %}selected{% endif %}>Ayurvedic</option>
+        <option value="popular" {% if product.tag == 'popular' %}selected{% endif %}>Popular</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Product Image <span style="color:var(--tmut);font-weight:400">(optional — replaces emoji on store)</span></label>
+      <div class="img-upload-area" id="imgArea" onclick="document.getElementById('imgInput').click()">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" class="img-preview" id="imgPreview">
+        <input type="hidden" name="clear_image" id="clearImageInput" value="">
+        <button type="button" style="font-size:11px;background:rgba(239,154,154,.1);color:#EF9A9A;border:1px solid rgba(239,154,154,.3);padding:4px 10px;cursor:pointer" onclick="event.stopPropagation();clearImg()">✕ Remove image</button>
+        {% else %}
+        <img src="" class="img-preview" id="imgPreview" style="display:none">
+        <p style="color:var(--tmut);font-size:13px;margin:0" id="imgPlaceholder">Click to upload image (JPG, PNG, WEBP)</p>
+        {% endif %}
+        <input type="file" id="imgInput" name="image" accept="image/*" style="display:none" onchange="previewImg(this)">
+      </div>
+    </div>
+    <div class="fg"><label>Ingredients <span style="color:var(--tmut);font-weight:400">(one per line)</span></label><textarea name="ingredients" rows="4" placeholder="e.g.&#10;Besan&#10;Ghee&#10;Sugar&#10;Cardamom">{{ product.ingredients|default:'' }}</textarea></div>
+    <div class="frow">
+      <div class="fg"><label>Shelf Life</label><input type="text" name="shelf_life" value="{{ product.shelf_life|default:'' }}" placeholder="e.g. 30 days at room temperature"></div>
+      <div class="fg"><label>Allergens</label><input type="text" name="allergens" value="{{ product.allergens|default:'' }}" placeholder="e.g. Contains nuts, dairy"></div>
+    </div>
+    <div class="fg"><label>Storage Instructions</label><textarea name="storage_instructions" rows="2" placeholder="e.g. Store in a cool, dry place. Refrigerate after opening.">{{ product.storage_instructions|default:'' }}</textarea></div>
+    <div class="fg">
+      <label>Emoji Icon — Selected: <span id="selEm">{{ product.emoji|default:'🟤' }}</span></label>
+      <div class="emoji-pick">
+        {% for e in emojis %}
+        <button type="button" class="ep {% if product.emoji == e or not product.emoji and e == '🟤' %}sel{% endif %}" onclick="pickEm('{{ e }}',this)">{{ e }}</button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="toggle-row">
+      <span class="toggle-lbl">Available on store</span>
+      <label class="toggle"><input type="checkbox" name="available" id="availChk" {% if product.available or not product %}checked{% endif %}><span class="tslider"></span></label>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <a href="{% url 'dashboard:products' %}" class="btn btn-out" style="flex:1;text-align:center">Cancel</a>
+      <button type="submit" class="btn btn-gold" style="flex:2">{{ action }} Product</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function pickEm(e,btn){
+  document.getElementById('emojiVal').value=e;
+  document.getElementById('selEm').textContent=e;
+  document.querySelectorAll('.ep').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function previewImg(input){
+  if(input.files&&input.files[0]){
+    const reader=new FileReader();
+    reader.onload=function(e){
+      const preview=document.getElementById('imgPreview');
+      const placeholder=document.getElementById('imgPlaceholder');
+      preview.src=e.target.result;
+      preview.style.display='block';
+      if(placeholder)placeholder.style.display='none';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+function clearImg(){
+  const input=document.getElementById('imgInput');
+  input.value='';
+  const preview=document.getElementById('imgPreview');
+  preview.src='';
+  preview.style.display='none';
+  const ci=document.getElementById('clearImageInput');
+  if(ci)ci.value='1';
+  const area=document.getElementById('imgArea');
+  const ph=document.getElementById('imgPlaceholder');
+  if(!ph){
+    const p=document.createElement('p');
+    p.id='imgPlaceholder';
+    p.style.cssText='color:var(--tmut);font-size:13px;margin:0';
+    p.textContent='Click to upload image (JPG, PNG, WEBP)';
+    area.insertBefore(p,input);
+  }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}{{ order.order_id }}{% endblock %}{% block page_title %}{{ order.order_id }}{% endblock %}{% block nav_orders %}active{% endblock %}
+{% block extra_css %}
+<style>
+.detail-sec{background:rgba(0,0,0,.2);border:1px solid var(--bg);padding:16px;margin-bottom:14px;}
+.detail-sec h3{font-size:10px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.drow{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--tmut);}
+.drow span:last-child{color:var(--ton);}
+.status-steps{display:flex;margin:10px 0;}
+.ss{flex:1;text-align:center;font-size:10px;color:var(--tmut);position:relative;}
+.ss-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--bg);background:var(--bd);margin:0 auto 4px;display:flex;align-items:center;justify-content:center;font-size:10px;position:relative;z-index:1;}
+.ss.done .ss-dot{background:var(--gold);border-color:var(--gold);color:var(--bd);}
+.ss.active .ss-dot{border:2px solid var(--gold);}
+.ss-line{position:absolute;top:10px;left:50%;width:100%;height:1px;background:var(--bg);z-index:0;}
+.ss.done .ss-line{background:var(--gold);}
+</style>
+{% endblock %}
+{% block main_content %}
+{% with statuses="New Making Packed Shipped Delivered" %}
+<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+  <a href="{% url 'dashboard:orders' %}" class="btn btn-out btn-sm">← Back to Orders</a>
+  <a href="https://wa.me/91{{ order.phone }}?text=Hi {{ order.name }}! Your order {{ order.order_id }} is {{ order.status }}." target="_blank" class="btn btn-sm" style="background:#1a4726;color:#81C784;border:1px solid #2d6a4f">📱 WhatsApp Customer</a>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div>
+  <div class="detail-sec">
+    <h3>Order Progress</h3>
+    <div class="status-steps">
+      {% for s in "New,Making,Packed,Shipped,Delivered"|split:"," %}
+      {% endfor %}
+    </div>
+    <!-- Status update form -->
+    <form method="post" action="{% url 'dashboard:update_status' order.pk %}" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
+      {% csrf_token %}
+      {% for s,label in status_choices %}
+      <button type="submit" name="status" value="{{ s }}" class="btn btn-sm {% if order.status == s %}btn-gold{% else %}btn-out{% endif %}">{{ s }}</button>
+      {% endfor %}
+    </form>
+  </div>
+  <div class="detail-sec">
+    <h3>Customer</h3>
+    <div class="drow"><span>Name</span><span>{{ order.name }}</span></div>
+    <div class="drow"><span>Phone</span><span>{{ order.phone }}</span></div>
+    <div class="drow"><span>Email</span><span>{{ order.email }}</span></div>
+    <div class="drow"><span>Payment</span><span>{{ order.get_pay_mode_display }}</span></div>
+    <div class="drow"><span>Address</span><span style="max-width:200px;text-align:right">{{ order.address }}</span></div>
+  </div>
+  <div class="detail-sec">
+    <h3>Tracking</h3>
+    <form method="post" action="{% url 'dashboard:update_tracking' order.pk %}">
+      {% csrf_token %}
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <input type="text" name="tracking" value="{{ order.tracking }}" placeholder="Enter courier tracking number" style="flex:1;padding:9px 12px;border:1px solid var(--bg);background:rgba(255,255,255,.05);color:white;font-family:'Jost',sans-serif;font-size:13px;outline:none;">
+        <button type="submit" class="btn btn-gold btn-sm">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div>
+  <div class="detail-sec">
+    <h3>Items Ordered</h3>
+    {% for item in order.items.all %}
+    <div class="drow"><span>{{ item.product_name }} ×{{ item.quantity }}</span><span>₹{{ item.subtotal }}</span></div>
+    {% endfor %}
+    <div class="drow" style="border-top:1px solid var(--bg);margin-top:8px;padding-top:10px;font-family:'Cormorant Garamond',serif;font-size:18px;color:white"><span>Total</span><span>₹{{ order.total }}</span></div>
+  </div>
+  {% if order.payment_screenshot %}
+  <div class="detail-sec">
+    <h3>Payment Screenshot</h3>
+    <img src="{{ order.payment_screenshot.url }}" style="width:100%;border:1px solid var(--bg);margin-top:6px">
+  </div>
+  {% endif %}
+  <div class="detail-sec">
+    <h3>Order Info</h3>
+    <div class="drow"><span>Order ID</span><span>{{ order.order_id }}</span></div>
+    <div class="drow"><span>Placed</span><span>{{ order.created_at|date:"d M Y, h:i A" }}</span></div>
+    <div class="drow"><span>Updated</span><span>{{ order.updated_at|date:"d M Y, h:i A" }}</span></div>
+    <div class="drow"><span>Status</span><span><span class="badge b-{{ order.status|lower }}">{{ order.status }}</span></span></div>
+  </div>
+</div>
+</div>
+{% endwith %}
+{% endblock %}
