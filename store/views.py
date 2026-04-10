@@ -1,4 +1,4 @@
-import json, random, string
+import json, random, string, re
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -89,8 +89,8 @@ def place_order(request):
 
         if not all([name, phone, email, address]):
             return JsonResponse({'error': 'All fields are required.'}, status=400)
-        if pay_mode == 'upi' and not screenshot:
-            return JsonResponse({'error': 'Payment screenshot is required for UPI orders.'}, status=400)
+        if not re.fullmatch(r'\d{10}', phone):
+            return JsonResponse({'error': 'Phone number must be exactly 10 digits.'}, status=400)
 
         cart = json.loads(cart_json)
         if not cart:

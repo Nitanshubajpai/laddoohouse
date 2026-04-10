@@ -379,7 +379,7 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
         <span class="pay-lbl" style="margin-bottom:14px">Your Details</span>
         <div class="frow">
           <div class="fg"><label>Full Name *</label><input type="text" id="custName" placeholder="Your name"></div>
-          <div class="fg"><label>WhatsApp Number *</label><input type="tel" id="custPhone" placeholder="10-digit number"></div>
+          <div class="fg"><label>WhatsApp Number *</label><input type="tel" id="custPhone" placeholder="10-digit number" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/\D/g,'')"></div>
         </div>
         <div class="fg"><label>Email Address *</label><input type="email" id="custEmail" placeholder="you@email.com"></div>
         <div class="fg"><label>Delivery Address *</label><textarea id="custAddr" rows="3" placeholder="Full address with pincode"></textarea></div>
@@ -392,7 +392,7 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
             <div class="upi-note">Pay this exact amount, then upload your screenshot below</div>
           </div>
           <div class="fg">
-            <label>Payment Screenshot * <span style="color:#C62828;font-size:9px;letter-spacing:1px">(Required)</span></label>
+            <label>Payment Screenshot <span style="color:#999;font-size:9px;letter-spacing:1px">(Optional)</span></label>
             <label class="ss-label" for="ssUp">
               <span class="ico">📸</span>
               <p>Tap to upload your UPI payment screenshot</p>
@@ -478,7 +478,7 @@ async function placeOrder(){
   const errEl=document.getElementById('errMsg');
   errEl.style.display='none';
   if(!name||!phone||!email||!addr){errEl.textContent='Please fill in all required fields.';errEl.style.display='block';return;}
-  if(payMode==='upi'&&!ssFile){errEl.textContent='Please upload your UPI payment screenshot.';errEl.style.display='block';return;}
+  if(!/^\d{10}$/.test(phone)){errEl.textContent='Please enter a valid 10-digit WhatsApp number.';errEl.style.display='block';return;}
   const items=Object.values(cart);
   if(!items.length){errEl.textContent='Your cart is empty.';errEl.style.display='block';return;}
   const fd=new FormData();

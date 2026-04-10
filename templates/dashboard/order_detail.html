@@ -16,7 +16,6 @@
 </style>
 {% endblock %}
 {% block main_content %}
-{% with statuses="New Making Packed Shipped Delivered" %}
 <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
   <a href="{% url 'dashboard:orders' %}" class="btn btn-out btn-sm">← Back to Orders</a>
   <a href="https://wa.me/91{{ order.phone }}?text=Hi {{ order.name }}! Your order {{ order.order_id }} is {{ order.status }}." target="_blank" class="btn btn-sm" style="background:#1a4726;color:#81C784;border:1px solid #2d6a4f">📱 WhatsApp Customer</a>
@@ -25,10 +24,6 @@
 <div>
   <div class="detail-sec">
     <h3>Order Progress</h3>
-    <div class="status-steps">
-      {% for s in "New,Making,Packed,Shipped,Delivered"|split:"," %}
-      {% endfor %}
-    </div>
     <!-- Status update form -->
     <form method="post" action="{% url 'dashboard:update_status' order.pk %}" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
       {% csrf_token %}
@@ -79,5 +74,4 @@
   </div>
 </div>
 </div>
-{% endwith %}
 {% endblock %}
