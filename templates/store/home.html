@@ -156,6 +156,16 @@ footer a{color:rgba(255,255,255,.5);text-decoration:none;font-size:12px;letter-s
 footer a:hover{color:#E8B96A;}
 footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
 
+/* CART STICKY BAR */
+.cart-bar{position:fixed;bottom:24px;right:24px;transform:translateY(100px);z-index:199;background:#1E0D00;color:#fff;border-radius:50px;padding:14px 24px;display:flex;align-items:center;gap:16px;box-shadow:0 8px 32px rgba(0,0,0,.28);cursor:pointer;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;pointer-events:none;max-width:calc(100vw - 48px);border:1px solid rgba(201,147,42,.3);}
+.cart-bar.visible{transform:translateY(0);opacity:1;pointer-events:auto;}
+.cart-bar-left{display:flex;align-items:center;gap:10px;flex:1;}
+.cart-bar-count{background:#C9932A;color:#fff;font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.cart-bar-label{font-size:14px;font-weight:600;letter-spacing:.3px;}
+.cart-bar-total{font-family:'Unbounded',sans-serif;font-size:14px;color:#C9932A;font-weight:800;}
+.cart-bar-cta{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#C9932A;font-weight:700;white-space:nowrap;}
+.cart-bar.hidden-by-drawer{opacity:0!important;pointer-events:none!important;}
+
 /* HAMBURGER */
 .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px;}
 .hamburger span{display:block;width:24px;height:2px;background:#1E0D00;border-radius:2px;transition:all .3s;}
@@ -347,6 +357,16 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
   <div class="copy">© 2025 The Laddoo House, Kanpur. All rights reserved.</div>
 </footer>
 
+<!-- Cart sticky bar -->
+<div class="cart-bar" id="cartBar" onclick="toggleCart()">
+  <div class="cart-bar-left">
+    <div class="cart-bar-count" id="cartBarCount">0</div>
+    <div class="cart-bar-label">View Cart</div>
+  </div>
+  <div class="cart-bar-total" id="cartBarTotal">₹0</div>
+  <div class="cart-bar-cta">Open →</div>
+</div>
+
 <!-- Cart -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-drawer" id="cartDrawer">
@@ -419,7 +439,7 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
 const WA='{{ whatsapp }}';
 const UPI_DISC={{ upi_discount }};
 const CSRF='{{ csrf_token }}';
-let cart={},payMode='upi',ssFile=null;
+let cart=JSON.parse(localStorage.getItem('tlh_cart')||'{}'),payMode='upi',ssFile=null;
 
 function toggleMobileMenu(){
   document.getElementById('hamburger').classList.toggle('open');
@@ -432,8 +452,10 @@ function closeMobileMenu(){
   document.body.style.overflow='';
 }
 
+function saveCart(){localStorage.setItem('tlh_cart',JSON.stringify(cart));}
 function addToCart(id,name,price,emoji,weight){
   cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1}:{id,name,price,emoji,weight,qty:1};
+  saveCart();
   updateCartUI();
   const btn=document.getElementById('btn-'+id);
   if(btn){btn.textContent='Added!';btn.classList.add('added');setTimeout(()=>{btn.textContent='+ Add';btn.classList.remove('added');},1200);}
@@ -452,10 +474,19 @@ function updateCartUI(){
     ci.innerHTML=items.map(i=>`<div class="cart-item"><div class="ci-em">${i.emoji}</div><div class="ci-info"><div class="ci-name">${i.name}</div><div class="ci-price">₹${i.price}×${i.qty}=₹${i.price*i.qty}</div></div><div class="ci-qty"><button class="qbtn" onclick="chQty(${i.id},-1)">−</button><span style="color:#1E0D00;font-weight:600">${i.qty}</span><button class="qbtn" onclick="chQty(${i.id},1)">+</button></div></div>`).join('');
     cf.style.display='block';document.getElementById('cartTotal').textContent='₹'+raw;
   }
+  // sticky cart bar
+  const bar=document.getElementById('cartBar');
+  document.getElementById('cartBarCount').textContent=count;
+  document.getElementById('cartBarTotal').textContent='₹'+raw;
+  bar.classList.toggle('visible',count>0);
   updateSum();
 }
-function chQty(id,d){if(!cart[id])return;cart[id].qty+=d;if(cart[id].qty<=0)delete cart[id];updateCartUI();}
-function toggleCart(){document.getElementById('cartDrawer').classList.toggle('open');document.getElementById('cartOverlay').classList.toggle('open');}
+function chQty(id,d){if(!cart[id])return;cart[id].qty+=d;if(cart[id].qty<=0)delete cart[id];saveCart();updateCartUI();}
+function toggleCart(){
+  const isOpen=document.getElementById('cartDrawer').classList.toggle('open');
+  document.getElementById('cartOverlay').classList.toggle('open');
+  document.getElementById('cartBar').classList.toggle('hidden-by-drawer',isOpen);
+}
 function openCheckout(){toggleCart();updateSum();document.getElementById('checkoutModal').classList.add('open');}
 function closeCheckout(){document.getElementById('checkoutModal').classList.remove('open');}
 function selectPay(m){
@@ -497,6 +528,7 @@ async function placeOrder(){
     const res=await fetch('{% url "store:place_order" %}',{method:'POST',body:fd});
     const data=await res.json();
     if(data.success){
+      localStorage.removeItem('tlh_cart');
       const itemsList=items.map(i=>`${i.name} ×${i.qty}`).join(', ');
       const payNote=payMode==='upi'?'Paid via UPI ✓ (₹'+UPI_DISC+' discount applied)':'Pay Later — our team will contact you';
       const msg=encodeURIComponent(`🏡 *The Laddoo House — Order Confirmed!*\n\nNamaste ${name}!\n\n*Order ID:* ${data.order_id}\n*Items:* ${itemsList}\n*Amount:* ₹${data.total}\n*Payment:* ${payNote}\n\nYour laddoos will be dispatched in 2 days. Thank you! 🙏\n— The Laddoo House`);
@@ -507,5 +539,7 @@ async function placeOrder(){
   btn.textContent='Place Order';btn.disabled=false;
 }
 selectPay('upi');
+updateCartUI();
+if(window.location.hash==='#cart'){history.replaceState(null,'',window.location.pathname);toggleCart();}
 </script>
 {% endblock %}
