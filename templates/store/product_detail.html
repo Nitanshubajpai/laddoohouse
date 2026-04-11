@@ -207,9 +207,10 @@ function updateBar(){
   bar.classList.toggle('visible',count>0);
 }
 
-function addToCart(id,name,price,emoji,weight){
+function addToCart(id,name,price,emoji,weight,sweetener='sugar'){
   const cart=getCart();
-  cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1}:{id,name,price,emoji,weight,qty:1};
+  const key=id+'__'+sweetener;
+  cart[key]=cart[key]?{...cart[key],qty:cart[key].qty+1}:{id,key,name,price,emoji,weight,sweetener,qty:1};
   saveCart(cart);
   updateBar();
 }

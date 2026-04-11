@@ -461,8 +461,8 @@ function closeMobileMenu(){
 
 function saveCart(){localStorage.setItem('tlh_cart',JSON.stringify(cart));}
 function addToCart(id,name,price,emoji,weight,sweetener='sugar'){
-  const swLabel={'sugar':'Sugar','brown_sugar':'Brown Sugar','unsweetened':'Unsweetened'};
-  cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1,sweetener}:{id,name,price,emoji,weight,sweetener,qty:1};
+  const key=id+'__'+sweetener;
+  cart[key]=cart[key]?{...cart[key],qty:cart[key].qty+1}:{id,key,name,price,emoji,weight,sweetener,qty:1};
   saveCart();
   updateCartUI();
   const btn=document.getElementById('btn-'+id);
@@ -480,7 +480,7 @@ function updateCartUI(){
   if(!items.length){ci.innerHTML='<div class="cart-empty"><p style="font-size:32px;margin-bottom:10px">🛒</p><p>Your cart is empty</p></div>';cf.style.display='none';}
   else{
     const swLabel={'sugar':'Sugar','brown_sugar':'Brown Sugar','unsweetened':'Unsweetened'};
-    ci.innerHTML=items.map(i=>`<div class="cart-item"><div class="ci-em">${i.emoji}</div><div class="ci-info"><div class="ci-name">${i.name}</div><div style="font-size:10px;color:#C9932A;letter-spacing:.5px;margin-top:2px">${swLabel[i.sweetener]||'Sugar'}</div><div class="ci-price">₹${i.price}×${i.qty}=₹${i.price*i.qty}</div></div><div class="ci-qty"><button class="qbtn" onclick="chQty(${i.id},-1)">−</button><span style="color:#1E0D00;font-weight:600">${i.qty}</span><button class="qbtn" onclick="chQty(${i.id},1)">+</button></div></div>`).join('');
+    ci.innerHTML=items.map(i=>`<div class="cart-item"><div class="ci-em">${i.emoji}</div><div class="ci-info"><div class="ci-name">${i.name}</div><div style="font-size:10px;color:#C9932A;letter-spacing:.5px;margin-top:2px">${swLabel[i.sweetener]||'Sugar'}</div><div class="ci-price">₹${i.price}×${i.qty}=₹${i.price*i.qty}</div></div><div class="ci-qty"><button class="qbtn" onclick="chQty('${i.key}',-1)">−</button><span style="color:#1E0D00;font-weight:600">${i.qty}</span><button class="qbtn" onclick="chQty('${i.key}',1)">+</button></div></div>`).join('');
     cf.style.display='block';document.getElementById('cartTotal').textContent='₹'+raw;
   }
   // sticky cart bar
@@ -490,7 +490,7 @@ function updateCartUI(){
   bar.classList.toggle('visible',count>0);
   updateSum();
 }
-function chQty(id,d){if(!cart[id])return;cart[id].qty+=d;if(cart[id].qty<=0)delete cart[id];saveCart();updateCartUI();}
+function chQty(key,d){if(!cart[key])return;cart[key].qty+=d;if(cart[key].qty<=0)delete cart[key];saveCart();updateCartUI();}
 function toggleCart(){
   const isOpen=document.getElementById('cartDrawer').classList.toggle('open');
   document.getElementById('cartOverlay').classList.toggle('open');

@@ -4,6 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}Admin{% endblock %} — The Laddoo House</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% load static %}
 <style>
 :root{--gold:#C9932A;--gold-lt:#E8B96A;--cream:#FFFBF4;--cream2:#FFF5E6;--border:#EAD9C2;--border2:#E8B96A;--text:#1E0D00;--muted:#8B6A50;--sw:230px;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -11,8 +12,8 @@ body{font-family:'Inter',sans-serif;background:#F5ECD8;color:var(--text);display
 
 /* SIDEBAR */
 .sidebar{width:var(--sw);background:var(--cream);border-right:2px solid var(--border2);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;box-shadow:2px 0 16px rgba(201,147,42,.08);}
-.sb-logo{padding:22px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
-.sb-ic{width:38px;height:38px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:10px;color:#fff;font-weight:800;}
+.sb-logo{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.sb-logo img{height:52px;width:auto;}
 .sb-brand{font-family:'Unbounded',sans-serif;font-size:10px;color:var(--text);line-height:1.5;font-weight:700;}
 .sb-brand span{display:block;font-size:8px;font-family:'Inter',sans-serif;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;font-weight:400;}
 .sb-nav{flex:1;padding:14px 0;}
@@ -104,7 +105,7 @@ tr:hover td{background:rgba(201,147,42,.04);}
 <body>
 <div class="sidebar">
   <div class="sb-logo">
-    <div class="sb-ic">LH</div>
+    <img src="{% static 'css/laddoo.png' %}" alt="The Laddoo House">
     <div class="sb-brand">The Laddoo House <span>Admin Panel</span></div>
   </div>
   <nav class="sb-nav">

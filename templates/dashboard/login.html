@@ -1,27 +1,42 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Login — Admin</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — The Laddoo House Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% load static %}
 <style>
-:root{--bd:#1C0A00;--br:#3B1507;--gold:#C9932A;--gl:#E8B96A;--bg:rgba(201,147,42,.3);--bgs:rgba(201,147,42,.6);}
-*{margin:0;padding:0;box-sizing:border-box;}body{font-family:'Jost',sans-serif;background:var(--bd);min-height:100vh;display:flex;align-items:center;justify-content:center;}
-.box{background:var(--br);border:1px solid var(--bg);padding:44px;width:min(380px,90%);text-align:center;}
-.lo{font-family:'Cormorant Garamond',serif;font-size:48px;color:var(--gold);margin-bottom:8px;}
-h2{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gl);margin-bottom:4px;}
-p{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-bottom:28px;}
-input{width:100%;padding:12px 14px;border:1px solid var(--bg);background:rgba(255,255,255,.05);color:white;font-family:'Jost',sans-serif;font-size:14px;outline:none;margin-bottom:10px;}
-input:focus{border-color:var(--gold);}
-input::placeholder{color:rgba(255,255,255,.25);}
-.btn{width:100%;background:var(--gold);color:var(--bd);border:none;padding:13px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Jost',sans-serif;letter-spacing:2px;text-transform:uppercase;margin-top:6px;}
-.err{background:rgba(139,32,32,.3);color:#EF9A9A;border:1px solid rgba(139,32,32,.5);padding:10px;font-size:13px;margin-bottom:14px;}
-</style></head><body>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#F5ECD8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.box{background:#FFFBF4;border:2px solid #E8B96A;border-radius:20px;padding:48px 44px;width:min(420px,100%);text-align:center;box-shadow:0 8px 40px rgba(201,147,42,.12);}
+.logo{margin-bottom:6px;}
+.logo img{height:90px;width:auto;}
+h2{font-family:'Unbounded',sans-serif;font-size:14px;color:#1E0D00;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px;}
+p{font-size:11px;color:#8B6A50;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;}
+.divider{border:none;border-top:1px solid #EAD9C2;margin:0 0 28px;}
+label{display:block;font-size:9px;color:#C9932A;letter-spacing:2px;text-transform:uppercase;font-weight:700;text-align:left;margin-bottom:6px;}
+input{width:100%;padding:12px 14px;border:1.5px solid #EAD9C2;background:#fff;color:#1E0D00;font-family:'Inter',sans-serif;font-size:14px;outline:none;margin-bottom:16px;border-radius:10px;transition:border-color .2s;}
+input:focus{border-color:#C9932A;}
+input::placeholder{color:#C4A882;}
+.btn{width:100%;background:#C9932A;color:#fff;border:none;padding:14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:2px;text-transform:uppercase;margin-top:4px;border-radius:10px;transition:background .2s;}
+.btn:hover{background:#A07520;}
+.err{background:rgba(198,40,40,.08);color:#C62828;border:1px solid rgba(198,40,40,.25);padding:10px 14px;font-size:13px;margin-bottom:16px;border-radius:8px;}
+</style>
+</head>
+<body>
 <div class="box">
-  <div class="lo">❧</div>
+  <div class="logo"><img src="{% static 'css/laddoo.png' %}" alt="The Laddoo House"></div>
   <h2>The Laddoo House</h2>
-  <p>Admin Dashboard</p>
+  <p>Admin Panel</p>
+  <hr class="divider">
   {% if messages %}{% for m in messages %}<div class="err">{{ m }}</div>{% endfor %}{% endif %}
   <form method="post">{% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button type="submit" class="btn">Sign In</button>
+    <label>Username</label>
+    <input type="text" name="username" placeholder="Enter username" required autofocus>
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Enter password" required>
+    <button type="submit" class="btn">Sign In →</button>
   </form>
 </div>
-</body></html>
+</body>
+</html>
