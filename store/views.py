@@ -1,4 +1,4 @@
-import json, random, string, re
+import json, random, string, re, threading
 import requests as http_requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -162,7 +162,7 @@ def place_order(request):
                 unit_price=item['price'],
                 sweetener=sweetener,
             )
-        _send_order_notifications(order)
+        threading.Thread(target=_send_order_notifications, args=(order,), daemon=True).start()
         return JsonResponse({'success': True, 'order_id': order_id, 'total': final_total})
 
     except Exception as e:
