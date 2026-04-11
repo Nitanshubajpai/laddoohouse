@@ -55,7 +55,7 @@
   <div class="detail-sec">
     <h3>Items Ordered</h3>
     {% for item in order.items.all %}
-    <div class="drow"><span>{{ item.product_name }} ×{{ item.quantity }}</span><span>₹{{ item.subtotal }}</span></div>
+    <div class="drow"><span>{{ item.product_name }} ×{{ item.quantity }}<br><span style="font-size:10px;color:var(--gold)">{{ item.get_sweetener_display }}</span></span><span>₹{{ item.subtotal }}</span></div>
     {% endfor %}
     <div class="drow" style="border-top:1px solid var(--bg);margin-top:8px;padding-top:10px;font-family:'Cormorant Garamond',serif;font-size:18px;color:white"><span>Total</span><span>₹{{ order.total }}</span></div>
   </div>

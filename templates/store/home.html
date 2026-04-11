@@ -312,13 +312,20 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
           <div class="product-name">{{ p.name }}</div>
           <div class="product-desc">{{ p.description }}</div>
         </div>
+        <div style="padding:0 20px 12px" onclick="event.preventDefault();event.stopPropagation()">
+          <select id="sw-{{ p.id }}" onclick="event.preventDefault();event.stopPropagation()" style="width:100%;padding:8px 10px;border:1px solid #EAD9C2;border-radius:8px;font-family:'Inter',sans-serif;font-size:12px;color:#5A3E28;background:#FFF8EE;outline:none;cursor:pointer;">
+            <option value="sugar">Sugar</option>
+            <option value="brown_sugar">Brown Sugar</option>
+            <option value="unsweetened">Unsweetened</option>
+          </select>
+        </div>
         <div class="product-foot">
           <div>
             <div class="product-price">₹{{ p.price }}</div>
             <div class="product-wt">{{ p.weight }} · Made to Order</div>
           </div>
           <button class="add-btn" id="btn-{{ p.id }}"
-            onclick="event.preventDefault();event.stopPropagation();addToCart({{ p.id }},'{{ p.name|escapejs }}',{{ p.price }},'{{ p.emoji }}','{{ p.weight }}')">+ Add</button>
+            onclick="event.preventDefault();event.stopPropagation();addToCart({{ p.id }},'{{ p.name|escapejs }}',{{ p.price }},'{{ p.emoji }}','{{ p.weight }}',document.getElementById('sw-{{ p.id }}').value)">+ Add</button>
         </div>
       </a>
     </div>
@@ -453,8 +460,9 @@ function closeMobileMenu(){
 }
 
 function saveCart(){localStorage.setItem('tlh_cart',JSON.stringify(cart));}
-function addToCart(id,name,price,emoji,weight){
-  cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1}:{id,name,price,emoji,weight,qty:1};
+function addToCart(id,name,price,emoji,weight,sweetener='sugar'){
+  const swLabel={'sugar':'Sugar','brown_sugar':'Brown Sugar','unsweetened':'Unsweetened'};
+  cart[id]=cart[id]?{...cart[id],qty:cart[id].qty+1,sweetener}:{id,name,price,emoji,weight,sweetener,qty:1};
   saveCart();
   updateCartUI();
   const btn=document.getElementById('btn-'+id);
@@ -471,7 +479,8 @@ function updateCartUI(){
   const ci=document.getElementById('cartItems'),cf=document.getElementById('cartFoot');
   if(!items.length){ci.innerHTML='<div class="cart-empty"><p style="font-size:32px;margin-bottom:10px">🛒</p><p>Your cart is empty</p></div>';cf.style.display='none';}
   else{
-    ci.innerHTML=items.map(i=>`<div class="cart-item"><div class="ci-em">${i.emoji}</div><div class="ci-info"><div class="ci-name">${i.name}</div><div class="ci-price">₹${i.price}×${i.qty}=₹${i.price*i.qty}</div></div><div class="ci-qty"><button class="qbtn" onclick="chQty(${i.id},-1)">−</button><span style="color:#1E0D00;font-weight:600">${i.qty}</span><button class="qbtn" onclick="chQty(${i.id},1)">+</button></div></div>`).join('');
+    const swLabel={'sugar':'Sugar','brown_sugar':'Brown Sugar','unsweetened':'Unsweetened'};
+    ci.innerHTML=items.map(i=>`<div class="cart-item"><div class="ci-em">${i.emoji}</div><div class="ci-info"><div class="ci-name">${i.name}</div><div style="font-size:10px;color:#C9932A;letter-spacing:.5px;margin-top:2px">${swLabel[i.sweetener]||'Sugar'}</div><div class="ci-price">₹${i.price}×${i.qty}=₹${i.price*i.qty}</div></div><div class="ci-qty"><button class="qbtn" onclick="chQty(${i.id},-1)">−</button><span style="color:#1E0D00;font-weight:600">${i.qty}</span><button class="qbtn" onclick="chQty(${i.id},1)">+</button></div></div>`).join('');
     cf.style.display='block';document.getElementById('cartTotal').textContent='₹'+raw;
   }
   // sticky cart bar
@@ -520,7 +529,7 @@ async function placeOrder(){
   const fd=new FormData();
   fd.append('name',name);fd.append('phone',phone);fd.append('email',email);
   fd.append('address',addr);fd.append('pay_mode',payMode);
-  fd.append('cart',JSON.stringify(items.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty}))));
+  fd.append('cart',JSON.stringify(items.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty,sweetener:i.sweetener||'sugar'}))));
   fd.append('csrfmiddlewaretoken',CSRF);
   if(ssFile)fd.append('screenshot',ssFile);
   const btn=document.getElementById('placeBtn');btn.textContent='Placing...';btn.disabled=true;

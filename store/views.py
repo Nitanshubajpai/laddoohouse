@@ -1,4 +1,5 @@
 import json, random, string, re
+import requests as http_requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -6,6 +7,24 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.core.mail import send_mail, BadHeaderError
 from .models import Product, Order, OrderItem
+
+
+def _send_whatsapp(to_number, body):
+    """Send a WhatsApp message via Twilio REST API. Silently skips if not configured."""
+    sid = getattr(settings, 'TWILIO_ACCOUNT_SID', '')
+    token = getattr(settings, 'TWILIO_AUTH_TOKEN', '')
+    from_wa = getattr(settings, 'TWILIO_WHATSAPP_FROM', '')
+    if not all([sid, token, from_wa]):
+        return
+    try:
+        http_requests.post(
+            f'https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json',
+            data={'From': from_wa, 'To': f'whatsapp:+{to_number}', 'Body': body},
+            auth=(sid, token),
+            timeout=10,
+        )
+    except Exception:
+        pass
 
 
 def _send_order_notifications(order):
@@ -60,6 +79,28 @@ def _send_order_notifications(order):
     except BadHeaderError:
         pass
 
+    # --- WhatsApp to owner ---
+    owner_wa = (
+        f'🛒 *New Order — {order.order_id}*\n\n'
+        f'Customer: {order.name}\n'
+        f'Phone: +91{order.phone}\n'
+        f'Payment: {pay_label}\n\n'
+        f'{items_text}\n\n'
+        f'*Total: ₹{order.total}*'
+    )
+    _send_whatsapp(settings.WHATSAPP_NUMBER, owner_wa)
+
+    # --- WhatsApp to customer ---
+    customer_wa = (
+        f'🏡 *The Laddoo House — Order Confirmed!*\n\n'
+        f'Hi {order.name}! Your order *{order.order_id}* has been placed.\n\n'
+        f'{items_text}\n\n'
+        f'*Total: ₹{order.total}*\n'
+        f'Payment: {pay_label}\n\n'
+        f'We\'ll dispatch within 2 days. Thank you! 🙏'
+    )
+    _send_whatsapp(f'91{order.phone}', customer_wa)
+
 
 def home(request):
     products = Product.objects.filter(available=True)
@@ -109,12 +150,17 @@ def place_order(request):
             address=address, total=final_total, pay_mode=pay_mode,
             payment_screenshot=screenshot if screenshot else None,
         )
+        valid_sweeteners = {'sugar', 'brown_sugar', 'unsweetened'}
         for item in cart:
+            sweetener = item.get('sweetener', 'sugar')
+            if sweetener not in valid_sweeteners:
+                sweetener = 'sugar'
             OrderItem.objects.create(
                 order=order,
                 product_name=item['name'],
                 quantity=item['qty'],
                 unit_price=item['price'],
+                sweetener=sweetener,
             )
         _send_order_notifications(order)
         return JsonResponse({'success': True, 'order_id': order_id, 'total': final_total})

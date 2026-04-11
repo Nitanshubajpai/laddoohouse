@@ -58,10 +58,16 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    SWEETENER_CHOICES = [
+        ('sugar', 'Sugar'),
+        ('brown_sugar', 'Brown Sugar'),
+        ('unsweetened', 'Unsweetened'),
+    ]
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
     product_name = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField()
     unit_price = models.PositiveIntegerField()
+    sweetener = models.CharField(max_length=20, choices=SWEETENER_CHOICES, default='sugar')
 
     @property
     def subtotal(self):

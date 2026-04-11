@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -70,11 +71,16 @@ OWNER_EMAIL = 'nitanshu.zigsaw@gmail.com'
 UPI_ID = '7355528989@axisb'
 UPI_DISCOUNT = 25
 
-# Email — set EMAIL_HOST_USER / EMAIL_HOST_PASSWORD in environment or override below
+# Email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ''       # e.g. yourshop@gmail.com
-EMAIL_HOST_PASSWORD = ''   # Gmail App Password
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = 'The Laddoo House <noreply@theladdoohouse.in>'
+
+# Twilio WhatsApp — set these env vars to enable WhatsApp alerts
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
+TWILIO_WHATSAPP_FROM = os.environ.get('TWILIO_WHATSAPP_FROM', 'whatsapp:+14155238886')  # Twilio sandbox default
