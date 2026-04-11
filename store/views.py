@@ -169,6 +169,26 @@ def place_order(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
+STATUS_ORDER = ['New', 'Making', 'Packed', 'Shipped', 'Delivered']
+
+def order_track(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    current_index = STATUS_ORDER.index(order.status) if order.status in STATUS_ORDER else 0
+    steps = []
+    for i, label in enumerate(STATUS_ORDER):
+        if i < current_index:
+            state = 'done'
+        elif i == current_index:
+            state = 'active'
+        else:
+            state = ''
+        steps.append({'label': label, 'state': state})
+    return render(request, 'store/order_track.html', {
+        'order': order,
+        'steps': steps,
+        'whatsapp': settings.WHATSAPP_NUMBER,
+    })
+
 def order_success(request, order_id):
     order = get_object_or_404(Order, order_id=order_id)
     return render(request, 'store/order_success.html', {'order': order, 'whatsapp': settings.WHATSAPP_NUMBER})
