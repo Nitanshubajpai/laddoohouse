@@ -1,41 +1,61 @@
 {% extends 'base.html' %}
 {% block title %}Order Confirmed — The Laddoo House{% endblock %}
 {% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% load static %}
 <style>
-.success-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
-.success-box{background:var(--br);border:1px solid var(--bg);padding:48px;text-align:center;max-width:500px;width:100%;}
-.suc-orn{font-family:'Cormorant Garamond',serif;font-size:60px;color:var(--gold);line-height:1;margin-bottom:8px;}
-h2{font-family:'Cormorant Garamond',serif;font-size:34px;color:white;margin-bottom:10px;}
-p{font-size:14px;color:var(--tmut);line-height:1.8;margin-bottom:6px;}
-.order-badge{font-family:'Cormorant Garamond',serif;font-size:20px;background:rgba(201,147,42,.12);color:var(--gl);border:1px solid var(--bg);padding:10px 28px;display:inline-block;margin:14px 0 22px;letter-spacing:2px;}
-.wa-btn{background:#25D366;color:white;border:none;padding:13px 30px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Jost',sans-serif;text-decoration:none;display:inline-block;margin-bottom:10px;}
-.back-btn{display:inline-block;background:transparent;color:var(--tmut);border:1px solid var(--bg);padding:11px 26px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:all .2s;margin-top:8px;}
-.back-btn:hover{color:var(--gold);border-color:var(--gold);}
+body{background:#F5ECD8;color:#1E0D00;}
+nav{background:#FFFBF4;border-bottom:2px solid #E8B96A;padding:0 6%;display:flex;align-items:center;height:90px;box-shadow:0 2px 16px rgba(201,147,42,.1);}
+.nav-logo{display:flex;align-items:center;gap:14px;text-decoration:none;}
+.nav-logo-img{height:70px;width:auto;}
+.nav-brand{font-family:'Unbounded',sans-serif;font-size:17px;color:#1E0D00;font-weight:800;}
+
+.wrap{min-height:calc(100vh - 90px);display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.box{background:#FFFBF4;border:2px solid #E8B96A;border-radius:20px;padding:48px 40px;text-align:center;max-width:520px;width:100%;box-shadow:0 8px 40px rgba(201,147,42,.12);}
+.orn{font-size:48px;margin-bottom:12px;display:block;}
+h2{font-family:'Unbounded',sans-serif;font-size:22px;color:#1E0D00;font-weight:800;margin-bottom:10px;}
+.sub{font-size:14px;color:#8B6A50;line-height:1.8;margin-bottom:6px;}
+.order-badge{display:inline-block;background:#FFF5E6;border:2px solid #E8B96A;color:#C9932A;font-family:'Unbounded',sans-serif;font-size:16px;font-weight:700;padding:10px 32px;border-radius:30px;letter-spacing:1px;margin:18px 0;}
+
+.track-box{background:#FFF8EE;border:1.5px solid #EAD9C2;border-radius:12px;padding:14px 18px;margin:18px 0;display:flex;align-items:center;gap:12px;flex-wrap:wrap;text-align:left;}
+.track-label{font-size:9px;color:#8B6A50;letter-spacing:2px;text-transform:uppercase;font-weight:700;white-space:nowrap;}
+.track-url{flex:1;font-size:12px;color:#A07520;word-break:break-all;font-family:'Inter',sans-serif;}
+.copy-btn{background:#C9932A;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;}
+.copy-btn:hover{background:#A07520;}
+
+.wa-btn{display:block;background:#25D366;color:#fff;padding:14px 30px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:10px;margin-top:20px;transition:background .2s;}
+.wa-btn:hover{background:#1da851;}
+.back-btn{display:block;background:transparent;color:#8B6A50;border:1.5px solid #EAD9C2;padding:12px 26px;font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;border-radius:10px;transition:all .2s;margin-top:10px;font-weight:600;}
+.back-btn:hover{color:#C9932A;border-color:#C9932A;}
 </style>
 {% endblock %}
+
 {% block content %}
-<div class="success-wrap">
-  <div class="success-box">
-    <div class="suc-orn">❧</div>
+<nav>
+  <a href="{% url 'store:home' %}" class="nav-logo">
+    <img src="{% static 'css/laddoo.png' %}" alt="The Laddoo House" class="nav-logo-img">
+    <div class="nav-brand">The Laddoo House</div>
+  </a>
+</nav>
+
+<div class="wrap">
+  <div class="box">
+    <span class="orn">🎉</span>
     <h2>Order Placed!</h2>
-    <p>Thank you, {{ order.name }}! Your fresh Hakeemji laddoos are being prepared with love.</p>
+    <p class="sub">Thank you, {{ order.name }}! Your fresh laddoos are being prepared with love.</p>
     <div class="order-badge">{{ order.order_id }}</div>
-    <p>Our team will reach out on WhatsApp to confirm your order and provide updates.</p>
-    <br>
-    <a class="wa-btn" href="https://wa.me/{{ whatsapp }}?text={{ order.order_id }}%20placed%2C%20please%20confirm!" target="_blank">Track on WhatsApp</a>
-    <br>
-    <a class="back-btn" href="{% url 'store:home' %}">Continue Shopping</a>
+    <p class="sub">Our team will reach out on WhatsApp to confirm your order and provide delivery updates.</p>
+
+    <div class="track-box">
+      <div>
+        <div class="track-label">Track Your Order</div>
+        <div class="track-url" id="trackUrl">{{ request.scheme }}://{{ request.get_host }}{% url 'store:order_track' order.order_id %}</div>
+      </div>
+      <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('trackUrl').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+    </div>
+
+    <a class="wa-btn" href="https://wa.me/{{ whatsapp }}?text={{ order.order_id }}%20placed%2C%20please%20confirm!" target="_blank">💬 Contact on WhatsApp</a>
+    <a class="back-btn" href="{% url 'store:home' %}">← Continue Shopping</a>
   </div>
 </div>
-<script>
-(function(){
-  var msg = encodeURIComponent(
-    "Hi! I just placed order *{{ order.order_id }}* on The Laddoo House.\n" +
-    "Name: {{ order.name }}\n" +
-    "Total: ₹{{ order.total }}\n" +
-    "Please confirm!"
-  );
-  window.open("https://wa.me/{{ whatsapp }}?text=" + msg, "_blank");
-})();
-</script>
 {% endblock %}
