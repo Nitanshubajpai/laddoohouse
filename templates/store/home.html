@@ -147,6 +147,20 @@ nav{position:sticky;top:0;z-index:100;background:#FFFBF4;border-bottom:2px solid
 .place-btn:hover{background:#A07520;}
 .err-msg{background:#FFEBEE;border:1px solid #FFCDD2;color:#C62828;border-radius:8px;padding:12px;font-size:13px;margin-top:10px;display:none;}
 
+/* CUSTOM ORDER */
+.custom-sec{background:#1E0D00;padding:90px 6%;text-align:center;position:relative;overflow:hidden;}
+.custom-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,147,42,.18) 0%,transparent 65%);pointer-events:none;}
+.custom-inner{max-width:640px;margin:0 auto;position:relative;}
+.custom-sec .orn{color:var(--gold);font-size:14px;letter-spacing:6px;display:block;margin-bottom:14px;}
+.custom-sec h2{font-family:'Unbounded',sans-serif;font-size:clamp(24px,4vw,38px);color:#fff;font-weight:800;line-height:1.25;margin-bottom:18px;}
+.custom-sec h2 em{color:#C9932A;font-style:normal;}
+.custom-sec p{font-size:15px;color:rgba(255,255,255,.6);line-height:1.9;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto;}
+.custom-examples{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:36px;}
+.custom-tag{background:rgba(201,147,42,.12);border:1px solid rgba(201,147,42,.3);color:#E8B96A;font-size:11px;padding:6px 16px;border-radius:20px;letter-spacing:.8px;}
+.custom-wa-btn{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:16px 36px;border-radius:12px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;transition:all .2s;box-shadow:0 4px 20px rgba(37,211,102,.3);}
+.custom-wa-btn:hover{background:#1da851;transform:translateY(-2px);}
+.custom-note{font-size:12px;color:rgba(255,255,255,.3);margin-top:18px;letter-spacing:.5px;}
+
 /* FOOTER */
 footer{background:#1E0D00;padding:56px 6%;text-align:center;}
 footer h3{font-family:'Unbounded',sans-serif;font-size:20px;color:#E8B96A;font-weight:700;}
@@ -236,12 +250,13 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
 {% load static %}
 <nav>
   <a href="{% url 'store:home' %}" class="nav-logo">
-    <img src="{% static 'css/laddoo.png' %}" alt="The Laddoo House" class="nav-logo-img">
+    <img src="{% static 'css/laddoo@2x.png' %}" alt="The Laddoo House" class="nav-logo-img">
     <div class="nav-brand-text">The Laddoo House</div>
   </a>
   <ul class="nav-links">
     <li><a href="#menu">Menu</a></li>
     <li><a href="#how">How It Works</a></li>
+    <li><a href="#custom">Custom Order</a></li>
     <li><a href="https://wa.me/{{ whatsapp }}" target="_blank">WhatsApp</a></li>
   </ul>
   <button class="nav-cart" onclick="toggleCart()">Cart <span class="cart-count" id="cartCount">0</span></button>
@@ -252,6 +267,7 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
 <div class="mobile-menu" id="mobileMenu">
   <a href="#menu" onclick="closeMobileMenu()">Menu</a>
   <a href="#how" onclick="closeMobileMenu()">How It Works</a>
+  <a href="#custom" onclick="closeMobileMenu()">Custom Order</a>
   <a href="https://wa.me/{{ whatsapp }}" target="_blank" onclick="closeMobileMenu()">WhatsApp</a>
   <a class="mm-cart" href="#" onclick="closeMobileMenu();toggleCart()">🛒 Cart <span id="mobileCartCount"></span></a>
 </div>
@@ -351,8 +367,29 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
   </div>
 </section>
 
+<section class="custom-sec" id="custom">
+  <div class="custom-inner">
+    <span class="orn">✦ CUSTOM ORDERS ✦</span>
+    <h2>Have a <em>personal preference?</em><br>We'll make it just for you.</h2>
+    <p>Want laddoos with a specific ingredient, a family recipe, a special occasion box, or dietary requirement? We love creating something truly personal.</p>
+    <div class="custom-examples">
+      <span class="custom-tag">Diabetic-friendly</span>
+      <span class="custom-tag">Dry fruit mix of your choice</span>
+      <span class="custom-tag">Jaggery sweetened</span>
+      <span class="custom-tag">Gift boxes</span>
+      <span class="custom-tag">Bulk orders</span>
+      <span class="custom-tag">Wedding / Occasion</span>
+      <span class="custom-tag">Your family recipe</span>
+    </div>
+    <a class="custom-wa-btn" href="https://wa.me/{{ whatsapp }}?text=Hi! I'd like to place a custom laddoo order. My preference: " target="_blank">
+      💬 Tell Us Your Preference
+    </a>
+    <p class="custom-note">We usually respond within a few hours · WhatsApp only</p>
+  </div>
+</section>
+
 <footer>
-  <img src="{% static 'css/laddoo.png' %}" alt="The Laddoo House" style="height:120px;margin-bottom:16px;opacity:.9">
+  <img src="{% static 'css/laddoo@2x.png' %}" alt="The Laddoo House" style="height:120px;margin-bottom:16px;opacity:.9">
   <h3>The Laddoo House</h3>
   <div class="tag">Taste of Ayurveda in Every Bite</div>
   <div class="links">

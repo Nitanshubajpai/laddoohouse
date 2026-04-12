@@ -5,6 +5,13 @@
 <title>{% block title %}Admin{% endblock %} — The Laddoo House</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 {% load static %}
+<link rel="manifest" href="/static/manifest.json">
+<meta name="theme-color" content="#C9932A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="LH Admin">
+<link rel="apple-touch-icon" href="{% static 'icons/icon-192.png' %}">
 <style>
 :root{--gold:#C9932A;--gold-lt:#E8B96A;--cream:#FFFBF4;--cream2:#FFF5E6;--border:#EAD9C2;--border2:#E8B96A;--text:#1E0D00;--muted:#8B6A50;--sw:230px;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -105,7 +112,7 @@ tr:hover td{background:rgba(201,147,42,.04);}
 <body>
 <div class="sidebar">
   <div class="sb-logo">
-    <img src="{% static 'css/laddoo.png' %}" alt="The Laddoo House">
+    <img src="{% static 'css/laddoo@2x.png' %}" alt="The Laddoo House">
     <div class="sb-brand">The Laddoo House <span>Admin Panel</span></div>
   </div>
   <nav class="sb-nav">
