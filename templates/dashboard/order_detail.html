@@ -4,9 +4,13 @@
 <style>
 .detail-sec{background:#fff;border:1px solid var(--border);padding:18px;margin-bottom:14px;border-radius:12px;}
 .detail-sec h3{font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;font-weight:700;}
-.drow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:var(--muted);border-bottom:1px solid var(--border);}
+.drow{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:var(--muted);border-bottom:1px solid var(--border);gap:12px;}
 .drow:last-child{border-bottom:none;}
-.drow span:last-child{color:var(--text);font-weight:500;}
+.drow span:last-child{color:var(--text);font-weight:500;text-align:right;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:640px){
+  .detail-grid{grid-template-columns:1fr;}
+}
 </style>
 {% endblock %}
 {% block main_content %}
@@ -20,7 +24,7 @@
   <code style="flex:1;font-size:12px;color:#A07520;word-break:break-all">{{ request.scheme }}://{{ request.get_host }}{% url 'store:order_track' order.order_id %}</code>
   <button onclick="navigator.clipboard.writeText('{{ request.scheme }}://{{ request.get_host }}{% url 'store:order_track' order.order_id %}');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)" class="btn btn-gold btn-sm">Copy</button>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div class="detail-grid">
 <div>
   <div class="detail-sec">
     <h3>Order Progress</h3>

@@ -18,41 +18,52 @@
 body{font-family:'Inter',sans-serif;background:#F5ECD8;color:var(--text);display:flex;min-height:100vh;}
 
 /* SIDEBAR */
-.sidebar{width:var(--sw);background:var(--cream);border-right:2px solid var(--border2);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;box-shadow:2px 0 16px rgba(201,147,42,.08);}
+.sidebar{width:var(--sw);background:var(--cream);border-right:2px solid var(--border2);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:50;box-shadow:2px 0 16px rgba(201,147,42,.08);transition:transform .25s ease;}
 .sb-logo{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
 .sb-logo img{height:52px;width:auto;}
 .sb-brand{font-family:'Unbounded',sans-serif;font-size:10px;color:var(--text);line-height:1.5;font-weight:700;}
 .sb-brand span{display:block;font-size:8px;font-family:'Inter',sans-serif;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;font-weight:400;}
-.sb-nav{flex:1;padding:14px 0;}
-.ni{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:11px;color:var(--muted);cursor:pointer;transition:all .15s;border-left:3px solid transparent;letter-spacing:1px;text-decoration:none;font-weight:600;text-transform:uppercase;}
+.sb-nav{flex:1;padding:14px 0;overflow-y:auto;}
+.ni{display:flex;align-items:center;gap:10px;padding:13px 20px;font-size:11px;color:var(--muted);cursor:pointer;transition:all .15s;border-left:3px solid transparent;letter-spacing:1px;text-decoration:none;font-weight:600;text-transform:uppercase;}
 .ni:hover{color:var(--text);background:rgba(201,147,42,.06);}
 .ni.active{color:var(--gold);border-left-color:var(--gold);background:rgba(201,147,42,.1);}
-.ni .ic{font-size:15px;width:20px;text-align:center;}
+.ni .ic{font-size:16px;width:22px;text-align:center;}
 .sb-foot{padding:14px 20px;border-top:1px solid var(--border);font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
 
 /* MAIN */
-.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;}
-.topbar{background:var(--cream);border-bottom:2px solid var(--border2);padding:0 28px;height:66px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;box-shadow:0 2px 16px rgba(201,147,42,.08);}
-.topbar h1{font-family:'Unbounded',sans-serif;font-size:13px;color:var(--text);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
-.tb-r{display:flex;align-items:center;gap:14px;}
+.main{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{background:var(--cream);border-bottom:2px solid var(--border2);padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;box-shadow:0 2px 16px rgba(201,147,42,.08);}
+.topbar h1{font-family:'Unbounded',sans-serif;font-size:12px;color:var(--text);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.tb-r{display:flex;align-items:center;gap:10px;}
 .tb-date{font-size:11px;color:var(--muted);letter-spacing:.5px;}
 .tb-av{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-family:'Unbounded',sans-serif;font-weight:700;}
-.content{padding:28px;}
+.content{padding:20px;}
+
+/* HAMBURGER (mobile only) */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px;margin-right:4px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* OVERLAY */
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(30,13,0,.4);z-index:49;}
+.sb-overlay.open{display:block;}
 
 /* STATS */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
-.stat{background:var(--cream);border:1px solid var(--border);padding:22px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.stat{background:var(--cream);border:1px solid var(--border);padding:20px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
 .stat-lbl{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-weight:600;}
-.stat-val{font-family:'Unbounded',sans-serif;font-size:26px;color:var(--text);font-weight:700;}
+.stat-val{font-family:'Unbounded',sans-serif;font-size:24px;color:var(--text);font-weight:700;}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:6px;}
 
 /* CARD */
-.card{background:var(--cream);border:1px solid var(--border);overflow:hidden;margin-bottom:24px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
-.card-head{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--cream2);}
+.card{background:var(--cream);border:1px solid var(--border);overflow:hidden;margin-bottom:20px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--cream2);}
 .card-head h2{font-family:'Unbounded',sans-serif;font-size:11px;color:var(--text);font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
 
 /* BUTTONS */
-.btn{padding:9px 18px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;border:none;transition:all .15s;font-weight:600;text-decoration:none;display:inline-block;border-radius:8px;}
+.btn{padding:9px 16px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;border:none;transition:all .15s;font-weight:600;text-decoration:none;display:inline-block;border-radius:8px;}
 .btn-gold{background:var(--gold);color:#fff;}
 .btn-gold:hover{background:#A07520;}
 .btn-out{background:transparent;color:var(--gold);border:1.5px solid var(--gold);}
@@ -62,15 +73,15 @@ body{font-family:'Inter',sans-serif;background:#F5ECD8;color:var(--text);display
 .btn-sm{padding:5px 12px;font-size:10px;}
 
 /* TABLE */
-.tbl-wrap{overflow-x:auto;}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
-th{padding:10px 18px;text-align:left;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--cream2);font-weight:600;}
-td{padding:14px 18px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text);}
+th{padding:10px 14px;text-align:left;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--cream2);font-weight:600;white-space:nowrap;}
+td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text);}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:rgba(201,147,42,.04);}
 
 /* BADGES */
-.badge{display:inline-flex;align-items:center;padding:4px 12px;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;border-radius:20px;}
+.badge{display:inline-flex;align-items:center;padding:4px 10px;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;border-radius:20px;white-space:nowrap;}
 .b-new{background:rgba(26,82,118,.1);color:#1565C0;border:1px solid rgba(26,82,118,.25);}
 .b-making{background:rgba(201,147,42,.15);color:#A07520;border:1px solid rgba(201,147,42,.4);}
 .b-packed{background:rgba(108,52,131,.1);color:#6A1B9A;border:1px solid rgba(108,52,131,.25);}
@@ -98,27 +109,49 @@ tr:hover td{background:rgba(201,147,42,.04);}
 /* TOGGLE */
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;}
 .toggle-lbl{font-size:13px;color:var(--text);}
-.toggle{position:relative;width:44px;height:24px;}
+.toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
 .toggle input{opacity:0;width:0;height:0;}
 .tslider{position:absolute;inset:0;background:var(--border);cursor:pointer;border:1.5px solid var(--border2);transition:.3s;border-radius:20px;}
 .tslider:before{content:'';position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2);}
 .toggle input:checked+.tslider{background:var(--gold);border-color:var(--gold);}
 .toggle input:checked+.tslider:before{transform:translateX(20px);}
 
-@media(max-width:900px){.stats{grid-template-columns:1fr 1fr;}}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .stats{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  :root{--sw:230px;}
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .hamburger{display:flex;}
+  .stats{grid-template-columns:1fr 1fr;gap:10px;}
+  .stat{padding:14px;}
+  .stat-val{font-size:20px;}
+  .content{padding:14px;}
+  .frow{grid-template-columns:1fr;}
+  .tb-date{display:none;}
+  .card-head{flex-direction:column;align-items:flex-start;}
+}
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr 1fr;}
+  .stat-val{font-size:18px;}
+}
 </style>
 {% block extra_css %}{% endblock %}
 </head>
 <body>
-<div class="sidebar">
+<div class="sb-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
   <div class="sb-logo">
     <img src="{% static 'css/laddoo@2x.png' %}" alt="The Laddoo House">
     <div class="sb-brand">The Laddoo House <span>Admin Panel</span></div>
   </div>
   <nav class="sb-nav">
-    <a href="{% url 'dashboard:home' %}" class="ni {% block nav_home %}{% endblock %}"><span class="ic">📊</span> Overview</a>
-    <a href="{% url 'dashboard:orders' %}" class="ni {% block nav_orders %}{% endblock %}"><span class="ic">📦</span> Orders</a>
-    <a href="{% url 'dashboard:products' %}" class="ni {% block nav_products %}{% endblock %}"><span class="ic">🟤</span> Products</a>
+    <a href="{% url 'dashboard:home' %}" class="ni {% block nav_home %}{% endblock %}" onclick="closeSidebar()"><span class="ic">📊</span> Overview</a>
+    <a href="{% url 'dashboard:orders' %}" class="ni {% block nav_orders %}{% endblock %}" onclick="closeSidebar()"><span class="ic">📦</span> Orders</a>
+    <a href="{% url 'dashboard:products' %}" class="ni {% block nav_products %}{% endblock %}" onclick="closeSidebar()"><span class="ic">🟤</span> Products</a>
     <a href="{% url 'store:home' %}" class="ni" target="_blank"><span class="ic">🌐</span> View Store</a>
     <a href="{% url 'dashboard:logout' %}" class="ni" style="margin-top:auto"><span class="ic">↩</span> Logout</a>
   </nav>
@@ -126,7 +159,12 @@ tr:hover td{background:rgba(201,147,42,.04);}
 </div>
 <div class="main">
   <div class="topbar">
-    <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+    </div>
     <div class="tb-r">
       <span class="tb-date" id="dt"></span>
       <div class="tb-av">TL</div>
@@ -137,7 +175,22 @@ tr:hover td{background:rgba(201,147,42,.04);}
     {% block main_content %}{% endblock %}
   </div>
 </div>
-<script>document.getElementById('dt').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});</script>
+<script>
+document.getElementById('dt').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+function toggleSidebar(){
+  const s=document.getElementById('sidebar');
+  const h=document.getElementById('hamburger');
+  const o=document.getElementById('sbOverlay');
+  s.classList.toggle('open');
+  h.classList.toggle('open');
+  o.classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('open');
+}
+</script>
 {% block extra_js %}{% endblock %}
 </body>
 </html>
