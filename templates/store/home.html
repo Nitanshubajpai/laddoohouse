@@ -504,7 +504,7 @@ function checkShipping(){
   const note=document.getElementById('shippingNote');
   const pc=document.getElementById('custPincode').value.trim();
   if(pc.length===6&&shipping>0){
-    note.textContent='🚚 Shipping charge of ₹'+shipping+' added for delivery outside Kanpur.';
+    note.textContent='🚚 Shipping charge of ₹'+shipping+' added for delivery.';
     note.style.display='block';
   } else if(pc.length===6&&shipping===0){
     note.textContent='✓ Free delivery within Kanpur!';
