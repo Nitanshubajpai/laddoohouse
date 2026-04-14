@@ -482,8 +482,8 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
 </div>
 {% endblock %}
 
-{{ kanpur_pincodes|json_script:"kanpur-pincodes-data" }}
 {% block extra_js %}
+{{ kanpur_pincodes|json_script:"kanpur-pincodes-data" }}
 <script>
 const WA='{{ whatsapp }}';
 const UPI_DISC={{ upi_discount }};
