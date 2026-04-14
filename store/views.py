@@ -109,6 +109,8 @@ def home(request):
         'upi_id': settings.UPI_ID,
         'upi_discount': settings.UPI_DISCOUNT,
         'whatsapp': settings.WHATSAPP_NUMBER,
+        'shipping_charge': settings.SHIPPING_CHARGE,
+        'kanpur_pincodes': list(settings.KANPUR_PINCODES),
     })
 
 
@@ -124,14 +126,17 @@ def place_order(request):
         phone = request.POST.get('phone', '').strip()
         email = request.POST.get('email', '').strip()
         address = request.POST.get('address', '').strip()
+        pincode = request.POST.get('pincode', '').strip()
         pay_mode = request.POST.get('pay_mode', 'upi')
         cart_json = request.POST.get('cart', '[]')
         screenshot = request.FILES.get('screenshot')
 
-        if not all([name, phone, email, address]):
+        if not all([name, phone, email, address, pincode]):
             return JsonResponse({'error': 'All fields are required.'}, status=400)
         if not re.fullmatch(r'\d{10}', phone):
             return JsonResponse({'error': 'Phone number must be exactly 10 digits.'}, status=400)
+        if not re.fullmatch(r'\d{6}', pincode):
+            return JsonResponse({'error': 'Please enter a valid 6-digit pincode.'}, status=400)
 
         cart = json.loads(cart_json)
         if not cart:
@@ -139,7 +144,8 @@ def place_order(request):
 
         raw_total = sum(item['price'] * item['qty'] for item in cart)
         discount = settings.UPI_DISCOUNT if pay_mode == 'upi' else 0
-        final_total = raw_total - discount
+        shipping = 0 if pincode in settings.KANPUR_PINCODES else settings.SHIPPING_CHARGE
+        final_total = raw_total - discount + shipping
 
         order_id = 'TLH-' + ''.join(random.choices(string.digits, k=4))
         while Order.objects.filter(order_id=order_id).exists():
@@ -147,7 +153,8 @@ def place_order(request):
 
         order = Order.objects.create(
             order_id=order_id, name=name, phone=phone, email=email,
-            address=address, total=final_total, pay_mode=pay_mode,
+            address=address, pincode=pincode, total=final_total,
+            pay_mode=pay_mode, shipping_charge=shipping,
             payment_screenshot=screenshot if screenshot else None,
         )
         valid_sweeteners = {'sugar', 'brown_sugar', 'unsweetened'}
@@ -163,7 +170,7 @@ def place_order(request):
                 sweetener=sweetener,
             )
         threading.Thread(target=_send_order_notifications, args=(order,), daemon=True).start()
-        return JsonResponse({'success': True, 'order_id': order_id, 'total': final_total})
+        return JsonResponse({'success': True, 'order_id': order_id, 'total': final_total, 'shipping': shipping})
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

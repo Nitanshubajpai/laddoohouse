@@ -44,6 +44,8 @@ class Order(models.Model):
     total = models.PositiveIntegerField()
     pay_mode = models.CharField(max_length=10, choices=PAY_CHOICES, default='upi')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='New')
+    pincode = models.CharField(max_length=10, blank=True, default='')
+    shipping_charge = models.PositiveIntegerField(default=0)
     tracking = models.CharField(max_length=100, blank=True, default='')
     payment_screenshot = models.ImageField(upload_to='screenshots/', blank=True, null=True)
     notes = models.TextField(blank=True, default='')

@@ -451,7 +451,11 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
           <div class="fg"><label>WhatsApp Number *</label><input type="tel" id="custPhone" placeholder="10-digit number" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/\D/g,'')"></div>
         </div>
         <div class="fg"><label>Email Address *</label><input type="email" id="custEmail" placeholder="you@email.com"></div>
-        <div class="fg"><label>Delivery Address *</label><textarea id="custAddr" rows="3" placeholder="Full address with pincode"></textarea></div>
+        <div class="frow">
+          <div class="fg" style="flex:1"><label>Delivery Address *</label><textarea id="custAddr" rows="3" placeholder="House no., street, area, city"></textarea></div>
+          <div class="fg" style="max-width:140px"><label>Pincode *</label><input type="text" id="custPincode" placeholder="6-digit" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'');checkShipping()"></div>
+        </div>
+        <div id="shippingNote" style="display:none;background:#FFF8EE;border:1px solid #E8B96A;border-radius:8px;padding:10px 14px;font-size:13px;color:#A07520;margin-bottom:12px;"></div>
         <div id="upiSec">
           <div class="upi-box">
             <div class="upi-qr">UPI QR Code<br>Add yours here</div>
@@ -478,12 +482,40 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
 </div>
 {% endblock %}
 
+{{ kanpur_pincodes|json_script:"kanpur-pincodes-data" }}
 {% block extra_js %}
 <script>
 const WA='{{ whatsapp }}';
 const UPI_DISC={{ upi_discount }};
 const CSRF='{{ csrf_token }}';
+const SHIPPING_CHARGE={{ shipping_charge }};
+const KANPUR_PINCODES=new Set(JSON.parse(document.getElementById('kanpur-pincodes-data').textContent));
 let cart=JSON.parse(localStorage.getItem('tlh_cart')||'{}'),payMode='upi',ssFile=null;
+
+function getShipping(){
+  const pc=document.getElementById('custPincode');
+  if(!pc)return 0;
+  const v=pc.value.trim();
+  if(v.length!==6)return 0;
+  return KANPUR_PINCODES.has(v)?0:SHIPPING_CHARGE;
+}
+function checkShipping(){
+  const shipping=getShipping();
+  const note=document.getElementById('shippingNote');
+  const pc=document.getElementById('custPincode').value.trim();
+  if(pc.length===6&&shipping>0){
+    note.textContent='🚚 Shipping charge of ₹'+shipping+' added for delivery outside Kanpur.';
+    note.style.display='block';
+  } else if(pc.length===6&&shipping===0){
+    note.textContent='✓ Free delivery within Kanpur!';
+    note.style.display='block';
+    note.style.background='#F0FFF4';note.style.borderColor='#A5D6A7';note.style.color='#2E7D32';
+  } else {
+    note.style.display='none';
+    note.style.background='#FFF8EE';note.style.borderColor='#E8B96A';note.style.color='#A07520';
+  }
+  updateSum();
+}
 
 function toggleMobileMenu(){
   document.getElementById('hamburger').classList.toggle('open');
@@ -546,9 +578,10 @@ function updateSum(){
   const items=Object.values(cart);
   const raw=items.reduce((s,i)=>s+i.price*i.qty,0);
   const disc=payMode==='upi'?UPI_DISC:0;
-  const final=raw-disc;
+  const shipping=getShipping();
+  const final=raw-disc+shipping;
   const el=document.getElementById('orderSum');if(!el)return;
-  el.innerHTML=`<div class="sum-lbl">Order Summary</div>${items.map(i=>`<div class="sum-row"><span>${i.name} ×${i.qty}</span><span>₹${i.price*i.qty}</span></div>`).join('')}${disc?`<div class="sum-row sum-disc"><span>UPI Discount</span><span>−₹${disc}</span></div>`:''}<div class="sum-total"><span>Total</span><span>₹${final}</span></div>`;
+  el.innerHTML=`<div class="sum-lbl">Order Summary</div>${items.map(i=>`<div class="sum-row"><span>${i.name} ×${i.qty}</span><span>₹${i.price*i.qty}</span></div>`).join('')}${disc?`<div class="sum-row sum-disc"><span>UPI Discount</span><span>−₹${disc}</span></div>`:''}${shipping?`<div class="sum-row"><span>Shipping</span><span>₹${shipping}</span></div>`:''}<div class="sum-total"><span>Total</span><span>₹${final}</span></div>`;
   document.getElementById('upiAmt').textContent='₹'+final;
 }
 function ssSelected(input){if(input.files&&input.files[0]){ssFile=input.files[0];const ok=document.getElementById('ssOk');ok.textContent='✓ '+ssFile.name;ok.style.display='block';}}
@@ -559,13 +592,15 @@ async function placeOrder(){
   const addr=document.getElementById('custAddr').value.trim();
   const errEl=document.getElementById('errMsg');
   errEl.style.display='none';
-  if(!name||!phone||!email||!addr){errEl.textContent='Please fill in all required fields.';errEl.style.display='block';return;}
+  const pincode=document.getElementById('custPincode').value.trim();
+  if(!name||!phone||!email||!addr||!pincode){errEl.textContent='Please fill in all required fields.';errEl.style.display='block';return;}
   if(!/^\d{10}$/.test(phone)){errEl.textContent='Please enter a valid 10-digit WhatsApp number.';errEl.style.display='block';return;}
+  if(!/^\d{6}$/.test(pincode)){errEl.textContent='Please enter a valid 6-digit pincode.';errEl.style.display='block';return;}
   const items=Object.values(cart);
   if(!items.length){errEl.textContent='Your cart is empty.';errEl.style.display='block';return;}
   const fd=new FormData();
   fd.append('name',name);fd.append('phone',phone);fd.append('email',email);
-  fd.append('address',addr);fd.append('pay_mode',payMode);
+  fd.append('address',addr);fd.append('pincode',pincode);fd.append('pay_mode',payMode);
   fd.append('cart',JSON.stringify(items.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty,sweetener:i.sweetener||'sugar'}))));
   fd.append('csrfmiddlewaretoken',CSRF);
   if(ssFile)fd.append('screenshot',ssFile);

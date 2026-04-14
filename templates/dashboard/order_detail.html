@@ -43,6 +43,8 @@
     <div class="drow"><span>Email</span><span>{{ order.email }}</span></div>
     <div class="drow"><span>Payment</span><span>{{ order.get_pay_mode_display }}</span></div>
     <div class="drow"><span>Address</span><span style="max-width:200px;text-align:right">{{ order.address }}</span></div>
+    <div class="drow"><span>Pincode</span><span>{{ order.pincode }}</span></div>
+    {% if order.shipping_charge %}<div class="drow"><span>Shipping</span><span>₹{{ order.shipping_charge }}</span></div>{% endif %}
   </div>
   <div class="detail-sec">
     <h3>Tracking</h3>
