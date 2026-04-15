@@ -462,7 +462,8 @@ footer .copy{font-size:11px;color:rgba(255,255,255,.18);margin-top:18px;}
             <div class="upi-id">UPI: {{ upi_id }}</div>
             <div class="upi-amt" id="upiAmt">₹0</div>
             <div class="upi-disc">₹{{ upi_discount }} discount applied!</div>
-            <div class="upi-note">Pay this exact amount, then upload your screenshot below</div>
+            <a id="upiPayBtn" href="#" target="_blank" onclick="return updateUpiLink(this)" style="display:inline-block;margin:14px auto 4px;padding:13px 28px;background:#C9932A;color:#fff;font-family:'Jost',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:10px;text-decoration:none;">📲 Pay via UPI App</a>
+            <div class="upi-note" style="margin-top:10px">Tap to open GPay / PhonePe / Paytm, then upload screenshot below</div>
           </div>
           <div class="fg">
             <label>Payment Screenshot <span style="color:#999;font-size:9px;letter-spacing:1px">(Optional)</span></label>
@@ -583,6 +584,13 @@ function updateSum(){
   const el=document.getElementById('orderSum');if(!el)return;
   el.innerHTML=`<div class="sum-lbl">Order Summary</div>${items.map(i=>`<div class="sum-row"><span>${i.name} ×${i.qty}</span><span>₹${i.price*i.qty}</span></div>`).join('')}${disc?`<div class="sum-row sum-disc"><span>UPI Discount</span><span>−₹${disc}</span></div>`:''}${shipping?`<div class="sum-row"><span>Shipping</span><span>₹${shipping}</span></div>`:''}<div class="sum-total"><span>Total</span><span>₹${final}</span></div>`;
   document.getElementById('upiAmt').textContent='₹'+final;
+  const btn=document.getElementById('upiPayBtn');
+  if(btn){btn.href='upi://pay?pa={{ upi_id }}&pn=TheLaddooHouse&am='+final+'&cu=INR&tn=LaddooHouseOrder';}
+}
+function updateUpiLink(a){
+  const amt=parseInt(document.getElementById('upiAmt').textContent.replace('₹',''))||0;
+  a.href='upi://pay?pa={{ upi_id }}&pn=TheLaddooHouse&am='+amt+'&cu=INR&tn=LaddooHouseOrder';
+  return true;
 }
 function ssSelected(input){if(input.files&&input.files[0]){ssFile=input.files[0];const ok=document.getElementById('ssOk');ok.textContent='✓ '+ssFile.name;ok.style.display='block';}}
 async function placeOrder(){
